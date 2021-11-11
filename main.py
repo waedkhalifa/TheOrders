@@ -15,6 +15,12 @@ def purchase(id):
         dataDictionary = reqGET.json()  # content of json as dictionary
         if dataDictionary['quantity'] < 1:
             return '', 406
+        else:
+            dataDictionary['quantity'] = dataDictionary['quantity'] - 1
+            reqPUT = requests.put('http://192.168.100.8:7000/updateinfo/{}'.format(id), json=(dataDictionary))
+            print(reqPUT.status_code)
+
+
 
     elif reqGET.status_code == 404:
         return 'The server has not found anything matching the URI given', 404
