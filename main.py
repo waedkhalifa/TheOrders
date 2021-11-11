@@ -19,7 +19,25 @@ def purchase(id):
             dataDictionary['quantity'] = dataDictionary['quantity'] - 1
             reqPUT = requests.put('http://192.168.100.8:7000/updateinfo/{}'.format(id), json=(dataDictionary))
             print(reqPUT.status_code)
+            if reqPUT.status_code == 200:
+                print('fjvivffjjvvvvvvvvvvvvvvv')
+                # The order server maintains
+                # a list of all orders received for the books.
+                f = open('ListOfOrders.json', 'r+')
 
+                data = json.load(f)
+                # for
+                data.append({'id': id, 'title': dataDictionary['title'], 'price': dataDictionary['price']})
+                f.close()
+                f2 = open('ListOfOrders.json', 'w')
+                json.dump(data, f2)
+                f2.close()
+                return jsonify({'id': id, 'title': dataDictionary['title'], 'price': dataDictionary['price']})
+            elif reqPUT.status_code == 404:
+                return 'The server has not found anything matching the URI given', reqPUT.status_code
+
+            else:
+                return 'Status code indicates to something ERROR!', reqPUT.status_code
 
 
     elif reqGET.status_code == 404:
