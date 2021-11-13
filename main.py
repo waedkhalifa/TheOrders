@@ -9,15 +9,15 @@ app = Flask(__name__)
 
 @app.route('/purchase/<int:id>', methods=['POST'])
 def purchase(id):
-    reqGET = requests.get('http://192.168.100.8:7000/info/{}'.format(id))
+    reqGET = requests.get('http://192.168.56.101:7000/info/{}'.format(id))
 
     if reqGET.status_code == 200:
         dataDictionary = reqGET.json()  # content of json as dictionary
         if dataDictionary['quantity'] < 1:
-            return '', 406
+            return 'Quantity can not be less than 1', reqGET.status_code
         else:
             dataDictionary['quantity'] = dataDictionary['quantity'] - 1
-            reqPUT = requests.put('http://192.168.100.8:7000/updateinfo/{}'.format(id), json=(dataDictionary))
+            reqPUT = requests.put('http://192.168.56.101:7000/updateinfo/{}'.format(id), json=(dataDictionary))
             print(reqPUT.status_code)
             if reqPUT.status_code == 200:
                 print('fjvivffjjvvvvvvvvvvvvvvv')
@@ -34,17 +34,17 @@ def purchase(id):
                 f2.close()
                 return jsonify({'id': id, 'title': dataDictionary['title'], 'price': dataDictionary['price']})
             elif reqPUT.status_code == 404:
-                return 'The server has not found anything matching the URI given', reqPUT.status_code
+                return 'The server has not found anything matching the given URL', reqPUT.status_code
 
             else:
-                return 'Status code indicates to something ERROR!', reqPUT.status_code
+                return 'Status code ' +str(reqPUT.status_code)+' indicates to something ERROR!', reqPUT.status_code
 
 
     elif reqGET.status_code == 404:
-        return 'The server has not found anything matching the URI given', 404
+        return 'The server has not found anything matching the given URL', 404
 
     else:
-        return 'Status code indicates to something ERROR!', reqGET.status_code
+        return 'Status code ' + str(reqGET.status_code) + ' indicates to something ERROR!', reqGET.status_code
 
 
 if __name__ == '__main__':
