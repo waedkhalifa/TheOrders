@@ -55,7 +55,7 @@ def edit(id):
     f2 = open('ListOfOrders.json', 'w')
     json.dump(data, f2)
     f2.close()        
-            
+    return ''       
             
 
 if __name__ == '__main__':
